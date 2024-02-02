@@ -1,1 +1,121 @@
+name: Release
 
+# on:
+#   schedule:
+#     # * is a special character in YAML so you have to quote this string
+#     - cron: "5 * * * *"
+on: [push]
+
+jobs:
+  release:
+    name: Release
+
+    runs-on: macOS-latest
+
+    steps:
+
+      - name: init
+        uses: actions/checkout@v1
+      
+#       - name: get sha
+#         id: sha
+#         shell: bash
+#         run: echo "::set-output name=value::$(cat sha.txt)"
+
+      - name: create release
+        id: release
+        uses: actions/create-release@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        with:
+          tag_name: v${{steps.package.outputs.version}}
+          release_name: V${{steps.package.outputs.version}}
+          draft: false
+          prerelease: false
+
+      - name: init cache
+        env:
+          git_cache: ${{secrets.GIT_CACHE}}
+          upload_url: ${{steps.release.outputs.upload_url}}
+          github_sha: ${{github.sha}}
+        run: |
+          git config --global user.email "jack.wang@integem.com"
+          git config --global user.name "Jack Wang"
+          git config --global -l
+          git clone $git_cache cache
+          cd cache
+          echo "$upload_url" > $github_sha.txt
+          git add $github_sha.txt
+          git commit -m "$github_sha"
+          git push
+     
+
+  tools:
+    needs: [release]
+
+    runs-on: ${{matrix.os}}
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [16]
+        python: [3.11]
+        os: [ubuntu-latest, macOS-11, windows-latest]
+
+    steps:
+      - name: init
+        uses: actions/checkout@master
+
+      # - name: set node
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version: ${{ matrix.node }}
+          
+      - name: set python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: clone
+        env:
+          sha: ${{steps.sha.outputs.value}} 
+        run: |
+          ls -alF
+          rm -rf *
+          rm -rf .git
+          rm -rf .github
+          ls -alF
+          git clone --depth 1 ${{secrets.GIT_ADDRESS}} .
+        shell: bash
+
+      - name: install
+        run: |
+         pip install -r requirements.txt
+         pip install pyinstaller
+
+      - name: deploy
+        run: pyinstaller --onefile --add-data "whisper\assets\mel_filters.npz;whisper\assets" --add-data "whisper\assets\gpt2.tiktoken;whisper\assets" --add-data "whisper\assets\multilingual.tiktoken;whisper\assets" .\my_openai_stream.py
+
+      - name: init cache
+        id: cache
+        shell: bash
+        env:
+          git_cache: ${{secrets.GIT_CACHE}}
+          github_sha: ${{github.sha}}
+        run: |
+          git clone $git_cache cache
+          cd cache
+          echo "::set-output name=upload_url::$(cat $github_sha.txt)"
+          
+      - name: Upload Release
+        uses: Ireoo/upload-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.cache.outputs.upload_url }}
+          dir: build
+          exts: '["exe", "dmg", "zip", "AppImage", "deb", "rpm", "apk", "msi", "pkg", "appx"]'
+          suffix: _tools
+          
+#       - name: Upload to tools.integem.com
+#         run: npm run upload
