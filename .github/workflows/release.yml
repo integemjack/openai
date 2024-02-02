@@ -106,8 +106,8 @@ jobs:
         env: 
           data: v${{steps.datetime.outputs.date}}
         run: |
-          sed -i 's/\"1.0.2\"/\"$data\"/g' my_openai_stream.py
-          cat my_openai_stream.py
+          sed -i "s/\"1.0.2\"/\"$data\"/g" ./my_openai_stream.py
+          cat ./my_openai_stream.py
 
       - name: deploy windows
         if: startsWith(matrix.os, 'windows')
