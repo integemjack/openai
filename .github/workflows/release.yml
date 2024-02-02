@@ -128,8 +128,8 @@ jobs:
         with:
           upload_url: ${{ steps.cache.outputs.upload_url }}
           dir: dist
-          exts: '["exe", "dmg", "zip", "AppImage", "deb", "rpm", "apk", "msi", "pkg", "appx", "my_openai_stream"]'
-          suffix: "_windows"
+          exts: '["exe", "dmg", "zip", "AppImage", "deb", "rpm", "apk", "msi", "pkg", "appx"]'
+          suffix: ""
 
       - name: Upload Release for macos
         uses: Ireoo/upload-release@v3
@@ -139,7 +139,7 @@ jobs:
         with:
           upload_url: ${{ steps.cache.outputs.upload_url }}
           dir: dist
-          exts: '["exe", "dmg", "zip", "AppImage", "deb", "rpm", "apk", "msi", "pkg", "appx", "my_openai_stream"]'
+          exts: '["exe", "dmg", "zip", "AppImage", "deb", "rpm", "apk", "msi", "pkg", "appx"]'
           suffix: "_macos"
 
       - name: Upload Release for linux
@@ -150,7 +150,7 @@ jobs:
         with:
           upload_url: ${{ steps.cache.outputs.upload_url }}
           dir: dist
-          exts: '["exe", "dmg", "zip", "AppImage", "deb", "rpm", "apk", "msi", "pkg", "appx", "my_openai_stream"]'
+          exts: '["exe", "dmg", "zip", "AppImage", "deb", "rpm", "apk", "msi", "pkg", "appx"]'
           suffix: "_linux"
           
 #       - name: Upload to tools.integem.com
