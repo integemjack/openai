@@ -102,20 +102,20 @@ jobs:
         id: datetime
         run: echo "::set-output name=date::$(date +'%Y.%m.%d')"
 
-      - name: set version for other system
-        if: startsWith(matrix.os, 'windows') || startsWith(matrix.os, 'ubuntu')
-        env: 
-          data: v${{steps.datetime.outputs.date}}
-        run: |
-          sed -i "s/\"1.0.2\"/\"$data\"/g" ./my_openai_stream.py
-          cat ./my_openai_stream.py
+      # - name: set version for other system
+      #   if: startsWith(matrix.os, 'windows') || startsWith(matrix.os, 'ubuntu')
+      #   env: 
+      #     data: v${{steps.datetime.outputs.date}}
+      #   run: |
+      #     sed -i "s/\"1.0.2\"/\"$data\"/g" ./my_openai_stream.py
+      #     cat ./my_openai_stream.py
 
-      - name: set version for macos
-        if: startsWith(matrix.os, 'macos')
+      - name: set version
+        # if: startsWith(matrix.os, 'macos')
         env: 
           data: v${{steps.datetime.outputs.date}}
         run: |
-          sed -i "" "s/\"1.0.2\"/\"$data\"/g" ./my_openai_stream.py
+          sed -i "" -e "s/\"1.0.2\"/\"$data\"/g" ./my_openai_stream.py
           cat ./my_openai_stream.py
 
       - name: deploy windows
