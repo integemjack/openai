@@ -44,8 +44,8 @@ jobs:
           git config --global -l
           git clone $git_cache cache
           cd cache
-          echo "$upload_url" > $github_sha.txt
-          git add $github_sha.txt
+          echo "$upload_url" > openai_$github_sha.txt
+          git add openai_$github_sha.txt
           git commit -m "$github_sha"
           git push
      
@@ -105,7 +105,7 @@ jobs:
         run: |
           git clone $git_cache cache
           cd cache
-          echo "::set-output name=upload_url::$(cat $github_sha.txt)"
+          echo "::set-output name=upload_url::$(cat openai_$github_sha.txt)"
           
       - name: Upload Release
         uses: Ireoo/upload-release@v2
