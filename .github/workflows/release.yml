@@ -29,7 +29,7 @@ jobs:
         id: release
         uses: actions/create-release@v1.0.0
         env:
-          GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         with:
           tag_name: v${{steps.datetime.outputs.date}}
           release_name: V${{steps.datetime.outputs.date}}
@@ -113,7 +113,7 @@ jobs:
       - name: Upload Release
         uses: Ireoo/upload-release@v2
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.cache.outputs.upload_url }}
           dir: build
