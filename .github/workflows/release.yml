@@ -103,7 +103,7 @@ jobs:
         run: pyinstaller --onefile --add-data "whisper\assets\mel_filters.npz;whisper\assets" --add-data "whisper\assets\gpt2.tiktoken;whisper\assets" --add-data "whisper\assets\multilingual.tiktoken;whisper\assets" .\my_openai_stream.py
 
       - name: deploy other system
-        if: startsWith(matrix.os, 'macos') && startsWith(matrix.os, 'ubuntu')
+        if: startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'ubuntu')
         run: pyinstaller --onefile --add-data "whisper\assets\mel_filters.npz:whisper\assets" --add-data "whisper\assets\gpt2.tiktoken:whisper\assets" --add-data "whisper\assets\multilingual.tiktoken:whisper\assets" .\my_openai_stream.py
 
 
