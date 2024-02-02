@@ -23,7 +23,7 @@ jobs:
 #         run: echo "::set-output name=value::$(cat sha.txt)"
       - name: Get current date and time
         id: datetime
-        run: echo "::set-output name=date::$(date +'%Y%m%d%H%M%S')"
+        run: echo "::set-output name=date::$(date +'%Y.%m.%d.%H%M%S')"
 
       - name: create release
         id: release
