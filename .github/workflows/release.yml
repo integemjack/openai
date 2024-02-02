@@ -102,31 +102,22 @@ jobs:
         id: datetime
         run: echo "::set-output name=date::$(date +'%Y.%m.%d')"
 
-      # - name: set version for other system
-      #   if: startsWith(matrix.os, 'windows') || startsWith(matrix.os, 'ubuntu')
-      #   env: 
-      #     data: v${{steps.datetime.outputs.date}}
-      #   run: |
-      #     sed -i "s/\"1.0.2\"/\"$data\"/g" ./my_openai_stream.py
-      #     cat ./my_openai_stream.py
-
       - name: set version
         # if: startsWith(matrix.os, 'macos')
         env: 
           data: v${{steps.datetime.outputs.date}}
         run: |
-          sed -i "" -e "s/\"1.0.2\"/\"$data\"/g" ./my_openai_stream.py
-          cat ./my_openai_stream.py
+          echo "$data" > version.txt
 
       - name: deploy windows
         if: startsWith(matrix.os, 'windows')
-        run: pyinstaller --onefile --add-data "whisper\assets\mel_filters.npz;whisper\assets" --add-data "whisper\assets\gpt2.tiktoken;whisper\assets" --add-data "whisper\assets\multilingual.tiktoken;whisper\assets" .\my_openai_stream.py
+        run: pyinstaller --onefile --version-file=version.txt --add-data "whisper\assets\mel_filters.npz;whisper\assets" --add-data "whisper\assets\gpt2.tiktoken;whisper\assets" --add-data "whisper\assets\multilingual.tiktoken;whisper\assets" .\my_openai_stream.py
 
       - name: deploy other system
         if: startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'ubuntu')
         run: |
          ls -alF
-         pyinstaller --onefile --add-data "whisper/assets/mel_filters.npz:whisper/assets" --add-data "whisper/assets/gpt2.tiktoken:whisper/assets" --add-data "whisper/assets/multilingual.tiktoken:whisper/assets" ./my_openai_stream.py
+         pyinstaller --onefile --version-file=version.txt --add-data "whisper/assets/mel_filters.npz:whisper/assets" --add-data "whisper/assets/gpt2.tiktoken:whisper/assets" --add-data "whisper/assets/multilingual.tiktoken:whisper/assets" ./my_openai_stream.py
          zip dist/my_openai_stream.zip dist/my_openai_stream
           
       - name: init cache
