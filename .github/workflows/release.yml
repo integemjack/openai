@@ -120,7 +120,7 @@ jobs:
           echo "::set-output name=upload_url::$(cat openai_$github_sha.txt)"
           
       - name: Upload Release for windows
-        uses: Ireoo/upload-release@v2
+        uses: Ireoo/upload-release@v3
         if: startsWith(matrix.os, 'windows')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -131,7 +131,7 @@ jobs:
           suffix: "_windows"
 
       - name: Upload Release for macos
-        uses: Ireoo/upload-release@v2
+        uses: Ireoo/upload-release@v3
         if: startsWith(matrix.os, 'macos')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -142,7 +142,7 @@ jobs:
           suffix: "_macos"
 
       - name: Upload Release for linux
-        uses: Ireoo/upload-release@v2
+        uses: Ireoo/upload-release@v3
         if: startsWith(matrix.os, 'ubuntu')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
