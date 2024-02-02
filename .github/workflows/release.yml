@@ -21,6 +21,9 @@ jobs:
 #         id: sha
 #         shell: bash
 #         run: echo "::set-output name=value::$(cat sha.txt)"
+      - name: Get current date and time
+        id: datetime
+        run: echo "::set-output name=date::$(date +'%Y%m%d%H%M%S')"
 
       - name: create release
         id: release
@@ -28,8 +31,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         with:
-          tag_name: v${{steps.package.outputs.version}}
-          release_name: V${{steps.package.outputs.version}}
+          tag_name: v${{steps.datetime.outputs.date}}
+          release_name: V${{steps.datetime.outputs.date}}
           draft: false
           prerelease: false
 
