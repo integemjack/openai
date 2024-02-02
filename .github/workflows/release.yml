@@ -108,7 +108,6 @@ jobs:
          ls -alF
          pyinstaller --onefile --add-data "whisper/assets/mel_filters.npz:whisper/assets" --add-data "whisper/assets/gpt2.tiktoken:whisper/assets" --add-data "whisper/assets/multilingual.tiktoken:whisper/assets" ./my_openai_stream.py
 
-
       - name: init cache
         id: cache
         shell: bash
@@ -120,15 +119,38 @@ jobs:
           cd cache
           echo "::set-output name=upload_url::$(cat openai_$github_sha.txt)"
           
-      - name: Upload Release
+      - name: Upload Release for windows
         uses: Ireoo/upload-release@v2
+        if: startsWith(matrix.os, 'windows')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.cache.outputs.upload_url }}
           dir: dist
-          exts: '["exe", "dmg", "zip", "AppImage", "deb", "rpm", "apk", "msi", "pkg", "appx"]'
-          suffix: ""
+          exts: '["exe", "dmg", "zip", "AppImage", "deb", "rpm", "apk", "msi", "pkg", "appx", "my_openai_stream"]'
+          suffix: "_windows"
+
+      - name: Upload Release for macos
+        uses: Ireoo/upload-release@v2
+        if: startsWith(matrix.os, 'macos')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.cache.outputs.upload_url }}
+          dir: dist
+          exts: '["exe", "dmg", "zip", "AppImage", "deb", "rpm", "apk", "msi", "pkg", "appx", "my_openai_stream"]'
+          suffix: "_macos"
+
+      - name: Upload Release for linux
+        uses: Ireoo/upload-release@v2
+        if: startsWith(matrix.os, 'ubuntu')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.cache.outputs.upload_url }}
+          dir: dist
+          exts: '["exe", "dmg", "zip", "AppImage", "deb", "rpm", "apk", "msi", "pkg", "appx", "my_openai_stream"]'
+          suffix: "_linux"
           
 #       - name: Upload to tools.integem.com
 #         run: npm run upload
