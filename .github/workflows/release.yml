@@ -63,7 +63,7 @@ jobs:
       matrix:
         node: [16]
         python: [3.11]
-        os: [ubuntu-latest, macOS-11, windows-latest]
+        os: [macOS-11, windows-latest] #ubuntu-latest, 
 
     steps:
       - name: init
@@ -112,8 +112,11 @@ jobs:
       - name: deploy windows
         if: startsWith(matrix.os, 'windows')
         #  --version-file .\version.txt
-        run: pyinstaller --onefile --add-data "whisper\assets\mel_filters.npz;whisper\assets" --add-data "whisper\assets\gpt2.tiktoken;whisper\assets" --add-data "whisper\assets\multilingual.tiktoken;whisper\assets" .\my_openai_stream.py
-
+        run: |
+         pyinstaller --onefile --add-data "whisper\assets\mel_filters.npz;whisper\assets" --add-data "whisper\assets\gpt2.tiktoken;whisper\assets" --add-data "whisper\assets\multilingual.tiktoken;whisper\assets" .\my_openai_stream.py
+         pyinstaller --onedir --add-data "whisper\assets\mel_filters.npz;whisper\assets" --add-data "whisper\assets\gpt2.tiktoken;whisper\assets" --add-data "whisper\assets\multilingual.tiktoken;whisper\assets" .\my_openai_stream.py
+         zip dist/my_openai_stream_windows.zip dist/my_openai_stream
+         
       - name: deploy other system
         if: startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'ubuntu')
         # --version-file ./version.txt
