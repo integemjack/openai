@@ -63,7 +63,7 @@ jobs:
       matrix:
         node: [16]
         python: [3.11]
-        os: [macOS-11, windows-latest] #ubuntu-latest, 
+        os: [macOS-latest, windows-latest] #ubuntu-latest, 
 
     steps:
       - name: init
